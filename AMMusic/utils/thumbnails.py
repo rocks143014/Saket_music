@@ -1,7 +1,7 @@
 import os
 import re
 import textwrap
-
+import random
 import aiofiles
 import aiohttp
 import numpy as np
@@ -9,8 +9,53 @@ import numpy as np
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from youtubesearchpython.__future__ import VideosSearch
 
-from config import YOUTUBE_IMG_URL
+import config
 from AMMusic import app
+YOUTUBE_IMG_URL = [ 
+
+"https://te.legra.ph/file/00294cbabc8bd4a9e75b0.mp4",
+"https://graph.org/file/7ca0ae3fe2e327d3dcc86.jpg",
+"https://te.legra.ph/file/e7629907cf40431ec6ccd.jpg",
+"https://graph.org/file/a39f6f364c34e724ef367.jpg",
+"https://graph.org/file/88fcdd5e044279c0d1747.jpg",
+"https://graph.org/file/fcc2837e0f83cd4d08765.jpg",
+"https://graph.org/file/1fcd0f7d5fdb7e700dca5.jpg",
+"https://graph.org/file/39c27bf76bf8742a148c4.jpg",
+"https://graph.org/file/2c5e6f38ca28687c8c3e8.jpg",
+"https://graph.org/file/71682c8fb277c84031c0f.jpg",
+"https://graph.org/file/c118207cef395ceb196ee.jpg",
+"https://graph.org/file/1b765cd3d9fcc99614a32.jpg",
+"https://graph.org/file/d935b6fbb2e3936b1850a.jpg",
+"https://graph.org/file/e94c4566b9a7cf7d23a4b.jpg",
+"https://graph.org/file/fd2196561ba6e8c4c46a9.jpg",
+"https://graph.org/file/17cbf7cedbc44b85c7bda.jpg",
+"https://graph.org/file/cd72a1c4c3b1d52070a90.jpg",
+"https://graph.org/file/8663d4f19f5d9c30f8ff9.jpg",
+"https://graph.org/file/255e5501d4f8b2e348d87.jpg",
+"https://graph.org/file/cf28d171b08e0590749c7.jpg",
+"https://graph.org/file/a1d7ccd85d58b076f8f88.jpg",
+"https://graph.org/file/aa10da451e1e263105516.jpg",
+"https://graph.org/file/cba9cd9f3fd1bcf841db2.jpg",
+"https://graph.org/file/a06eaee8e9070840947bd.jpg",
+"https://graph.org/file/83f5a1123580bd75f591e.jpg",
+"https://graph.org/file/2f4f60ba8405368505ba2.jpg",
+"https://graph.org/file/18da6db0b032a6c428471.jpg",
+"https://graph.org/file/cd0f7fd0dc68ce8dbe2d4.jpg",
+"https://graph.org/file/eabfa2836ec2e6fb41cd5.jpg",
+"https://graph.org/file/59fb7cd9ea2d1331e75ef.jpg",
+"https://graph.org/file/748e908aaa6cbb6c03402.jpg",
+"https://graph.org/file/a26d09d472ddce5532ca2.jpg",
+"https://graph.org/file/3fb4577387c3934eed027.jpg",
+"https://graph.org/file/e19ab57b45fe4c9765869.jpg",
+"https://graph.org/file/4b9b5d7b6e1a46c55dea1.jpg",
+"https://graph.org/file/d7f9dd74e37f3e4985075.jpg",
+"https://graph.org/file/8fd58648581a8f8d3f19b.jpg",
+"https://te.legra.ph/file/7b10f2f5ffb1bc6075197.jpg",
+"https://te.legra.ph/file/628180b161e5233889919.jpg",
+"https://te.legra.ph/file/e8571aeadbd3204a28076.jpg",
+"https://te.legra.ph/file/8d3944528638ff176d115.jpg",
+"https://te.legra.ph/file/95c760593b889ac2cf283.jpg",
+    ]
 
 
 def changeImageSize(maxWidth, maxHeight, image):
@@ -26,7 +71,7 @@ def add_corners(im):
     bigsize = (im.size[0] * 3, im.size[1] * 3)
     mask = Image.new("L", bigsize, 0)
     ImageDraw.Draw(mask).ellipse((0, 0) + bigsize, fill=255)
-    mask = mask.resize(im.size, Image.LANCZOS)
+    mask = mask.resize(im.size, Image.ANTIALIAS)
     mask = ImageChops.darker(mask, im.split()[-1])
     im.putalpha(mask)
 
@@ -82,7 +127,7 @@ async def gen_thumb(videoid, user_id):
         x = f.resize((107, 107))
 
         youtube = Image.open(f"cache/thumb{videoid}.png")
-        bg = Image.open(f"AMMusic/assets/AMMusic.png")
+        bg = Image.open(f"AMMusic/assets/am.png")
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
         background = image2.filter(filter=ImageFilter.BoxBlur(30))
@@ -100,7 +145,7 @@ async def gen_thumb(videoid, user_id):
         x2 = Xcenter + 250
         y2 = Ycenter + 250
         logo = youtube.crop((x1, y1, x2, y2))
-        logo.thumbnail((520, 520), Image.LANCZOS)
+        logo.thumbnail((520, 520), Image.ANTIALIAS)
         logo.save(f"cache/chop{videoid}.png")
         if not os.path.isfile(f"cache/cropped{videoid}.png"):
             im = Image.open(f"cache/chop{videoid}.png").convert("RGBA")
@@ -109,7 +154,7 @@ async def gen_thumb(videoid, user_id):
 
         crop_img = Image.open(f"cache/cropped{videoid}.png")
         logo = crop_img.convert("RGBA")
-        logo.thumbnail((365, 365), Image.LANCZOS)
+        logo.thumbnail((365, 365), Image.ANTIALIAS)
         width = int((1280 - 365) / 2)
         background = Image.open(f"cache/temp{videoid}.png")
         background.paste(logo, (width + 2, 138), mask=logo)
@@ -168,7 +213,7 @@ async def gen_thumb(videoid, user_id):
         return f"cache/{videoid}_{user_id}.png"
     except Exception as e:
         print(e)
-        return YOUTUBE_IMG_URL
+        return random.choice(YOUTUBE_IMG_URL)
 
 
 async def gen_qthumb(videoid, user_id):
@@ -222,7 +267,7 @@ async def gen_qthumb(videoid, user_id):
         x = f.resize((107, 107))
 
         youtube = Image.open(f"cache/thumb{videoid}.png")
-        bg = Image.open(f"AMMusic/assets/AMMusic.png")
+        bg = Image.open(f"AMMusic/assets/am.png")
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
         background = image2.filter(filter=ImageFilter.BoxBlur(30))
@@ -240,7 +285,7 @@ async def gen_qthumb(videoid, user_id):
         x2 = Xcenter + 250
         y2 = Ycenter + 250
         logo = youtube.crop((x1, y1, x2, y2))
-        logo.thumbnail((520, 520), Image.LANCZOS)
+        logo.thumbnail((520, 520), Image.ANTIALIAS)
         logo.save(f"cache/chop{videoid}.png")
         if not os.path.isfile(f"cache/cropped{videoid}.png"):
             im = Image.open(f"cache/chop{videoid}.png").convert("RGBA")
@@ -249,7 +294,7 @@ async def gen_qthumb(videoid, user_id):
 
         crop_img = Image.open(f"cache/cropped{videoid}.png")
         logo = crop_img.convert("RGBA")
-        logo.thumbnail((365, 365), Image.LANCZOS)
+        logo.thumbnail((365, 365), Image.ANTIALIAS)
         width = int((1280 - 365) / 2)
         background = Image.open(f"cache/temp{videoid}.png")
         background.paste(logo, (width + 2, 138), mask=logo)
@@ -310,4 +355,4 @@ async def gen_qthumb(videoid, user_id):
         return f"cache/que{videoid}_{user_id}.png"
     except Exception as e:
         print(e)
-        return YOUTUBE_IMG_URL
+        return random.choice(YOUTUBE_IMG_URL)
