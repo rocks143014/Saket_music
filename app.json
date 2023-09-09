@@ -1,7 +1,7 @@
 {
-    "name": "Sophia Music",
+    "name": "XD Music",
     "description": "A Telegram Music Player Bot, written in Python with Pyrogram and Py-Tgcalls.",
-    "logo": "https://graph.org/file/ea11748b5ecd674583a99.jpg",
+    "logo": "https://graph.org/file/3a2b010905848b0a27afc.jpg",
     "keywords": [
     "python3",
     "telegram",
