@@ -70,11 +70,11 @@ def stream_markup_timer(_, videoid, chat_id, played, dur):
         ],
          [
             InlineKeyboardButton(
-                text=" ᴏᴡɴᴇʀ 💞", url=f"https://t.me/AM_YTBOTT"
+                text=" ᴏᴡɴᴇʀ 💞", url=f"https://t.me/ROCKY_ISS_BACK"
             ),
             InlineKeyboardButton(
 
-                text="ᴏᴜʀ ᴡᴏʀʟᴅ 💌", url=f"https://t.me/+CrphTp8tInNjZmRl"
+                text="ᴏᴜʀ ᴡᴏʀʟᴅ 💌", url=f"https://t.me/XD_SPAM"
              ),
           ],
         [
